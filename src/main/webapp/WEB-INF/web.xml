@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	id="WebApp_ID" version="4.0">
+
+
+	<display-name>SorganizerX</display-name>
+	<welcome-file-list>
+		<welcome-file>signup.html</welcome-file>
+		<welcome-file>login.html</welcome-file>
+		<welcome-file>home.html</welcome-file>
+	</welcome-file-list>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value></param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>databaseUrl</param-name>
+		<param-value>jdbc:mysql://mysqlserver:3306/serviceorganizerjpa?serverTimezone=UTC</param-value>
+	</context-param>
+ 
+	<servlet>
+		<!-- Provide a Servlet Name -->
+		<servlet-name>SorganizerX</servlet-name>
+		<!-- Provide a fully qualified path to the DispatcherServlet class -->
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>WEB-INF/SorganizerX-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<!-- Provide a Servlet Name that you want to map -->
+		<servlet-name>SorganizerX</servlet-name>
+		<!-- Provide a url pattern -->
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+
+</web-app>

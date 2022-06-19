@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+
+    <title>Admin</title>
+</head>
+<body>
+<div class="container">
+    <div id="logoutDiv">
+        <form th:action="@{'/logout'}" action="#" method="POST">
+            <button id="logout-button" type="submit" class="btn btn-secondary float-right">Logout</button>
+        </form>
+        <span sec:authentication="name">Username</span>
+        <span sec:authentication="principal.authorities">Roles</span>
+    </div>
+</div>
+<div id="contentDiv" style="clear: right;">
+    <nav style="clear: right;">
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-listofallusers-tab" data-toggle="tab" href="#nav-listofallusers"
+               role="tab"
+               aria-controls="nav-listofallusers" aria-selected="true">List of all users</a>
+            <a class="nav-item nav-link" id="nav-admin-tab" data-toggle="tab" href="#nav-admin" role="tab"
+               aria-controls="nav-notes" aria-selected="true">Admin</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-listofallusers" role="tabpanel"
+             aria-labelledby="nav-listofallusers-tab">
+            <!--form th:object="${usersListForm}" action="#" th:action="@{'/userslist'}">
+                <button id="showUser" type="button" class="btn btn-info float-right"
+                        onclick="showUserModal()">
+                    Edit user
+                </button>
+            </form-->
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="userTable">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 5%" scope="col">User Id.</th>
+                        <th style="width: 20%" scope="col">User name</th>
+                        <th style="width: 20%" scope="col">First name</th>
+                        <th style="width: 20%" scope="col">Last name</th>
+                        <th style="width: 10%" scope="col">Roles</th>
+                        <th style="width: 5%" scope="col">Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${allUsers}">
+                        <td th:text="${user.getUserId()}"></td>
+                        <td th:text="${user.getUsername()}"></td>
+                        <td th:text="${user.getFirstName()}"></td>
+                        <td th:text="${user.getLastName()}"></td>
+                        <td th:text="${user.getRoles()}"></td>
+                        <td><a th:href="@{'/admin/userslist/edit/' + ${user.getUserId()}}">Edit</a>
+                            <!--button type="button" class="btn btn-success"
+                                    th:id="'userbtn of row '+${user.getUserId()}"
+                                    th:userId="${user.getUserId()}"
+                                    th:username="${user.getUsername()}"
+                                    th:firstname="${user.getFirstName()}"
+                                    th:lastname="${user.getLastName()}"
+                                    th:roles="${user.getRoles()}"
+                                    th:onclick="javascript:showUserModal(this.getAttribute('userId'),this.getAttribute('username'), this.getAttribute('firstname'), this.getAttribute('lastname'), this.getAttribute('roles'))"
+                            >Edit</button-->
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="scheduleModalLabel">Edit user</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form th:object="${usersListForm}" th:action="@{'admin/userslist/save'}" action="#"
+                                  method="POST">
+                                <input type="hidden" name="userId" th:field=*{userId} id="userid">
+                                <div class="form-group">
+                                    <label for="username" class="col-form-label">Username</label>
+                                    <input th:field="*{username}" th:text="${username}" type="text" name="username"
+                                           class="form-control"
+                                           id="username">
+                                    <label for="firstName" class="col-form-label">First name</label>
+                                    <input th:field="*{firstName}" type="text" name="firstName" class="form-control"
+                                           id="firstName" maxlength="20" required>
+                                    <label for="lastName" class="col-form-label">last name</label>
+                                    <input th:field="*{lastName}" type="text" name="lastName" class="form-control"
+                                           id="lastName" maxlength="20" required>
+                                    <label class="col-form-label">Assigned roles</label>
+                                    <th:block th:each="role : ${allRoles}">
+                                        <input th:field="*{roles}" type="checkbox" th:value="${role.id}"
+                                               th:text="${role.name}"
+                                               class="m-2">
+
+                                    </th:block>
+                                    </select>
+                                </div>
+                                <button id="userSaveSubmit" type="submit" class="d-none"></button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="$('#userSaveSubmit').click();">Save
+                                changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div-->
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-slim.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript">
+function showUserModal(userId, userName, firstName, lastName, roles) {
+$('#userid').val(userId ? userId : '');
+$('#username').val(userName ? userName : '');
+$('#firstName').val(firstName ? firstName : '');
+$('#lastName').val(lastName ? lastName : '');
+$('#roles').val(roles ? roles: '');
+$("#modal-checkboxUser").prop("checked", roles.includes("USER"));
+$("#modal-checkboxAdmin").prop("checked", roles.includes("ADMIN"));
+$("#modal-checkboxAdmin").prop("checked", roles.includes("EDITOR"));
+$("#modal-checkboxAdmin").prop("checked", roles.includes("CREATOR"));
+
+
+$('#userModal').modal('show');
+}
+
+function showModal() {
+$('#userModal').modal('show');
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>

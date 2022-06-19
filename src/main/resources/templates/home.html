@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+
+    <title>Home</title>
+</head>
+<body class="p-3 mb-2 bg-light text-black">
+<div class="container">
+    <div id="logoutDiv">
+        <form th:action="@{'/logout'}" action="#" method="POST">
+            <button id="logout-button" type="submit" class="btn btn-secondary float-right">Logout</button>
+        </form>
+        <span sec:authentication="name">Username</span>
+        <span sec:authentication="principal.authorities">Roles</span>
+    </div>
+</div>
+<div id="contentDiv" style="clear: right;">
+    <nav style="clear: right;">
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-schedule-tab" data-toggle="tab" href="#nav-schedule" role="tab"
+               aria-controls="nav-schedule" aria-selected="true">Schedule</a>
+            <a class="nav-item nav-link" id="nav-repRequest-tab" data-toggle="tab" href="#nav-repRequest" role="tab"
+               aria-controls="nav-notes" aria-selected="true">Repair Requests</a>
+            <!--a class="nav-item nav-link" id="nav-credentials-tab" data-toggle="tab" href="#nav-credentials" role="tab" aria-controls="nav-credentials" aria-selected="false">Credentials</a-->
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-schedule" role="tabpanel" aria-labelledby="nav-schedule-tab">
+            <form th:object="${scheduleForm}" action="#" th:action="@{'/schedule'}">
+                <button id="showSchedule" type="button" class="btn btn-info float-right"
+                        onclick="showScheduleModal()">
+                    Schedule a request
+                </button>
+            </form>
+
+            <div class="table-responsive">
+                <table th:each="allEntries:${ScheduledHours}" class="table table-striped" id="fileTable">
+                    <thead>
+                    <tr>
+                        <th colspan="20" style="width: 100%; text-align: center" scope="col"
+                            th:text="${#temporals.dayOfWeekName(allEntries.key)+' - '}+${#temporals.day(allEntries.key)+'.'}+${#temporals.month(allEntries.key)+'.'}+${#temporals.year(allEntries.key)}"></th>
+                    </tr>
+                    <tr>
+                        <th style="width: 17%" scope="col">Mechanics</th>
+                        <th style="width: 4,5%" scope="col">8:00</th>
+                        <th style="width: 4,5%" scope="col">8:30</th>
+                        <th style="width: 4,5%" scope="col">9:00</th>
+                        <th style="width: 4,5%" scope="col">9:30</th>
+                        <th style="width: 4,5%" scope="col">10:00</th>
+                        <th style="width: 4,5%" scope="col">10:30</th>
+                        <th style="width: 4,5%" scope="col">11:00</th>
+                        <th style="width: 4,5%" scope="col">11:30</th>
+                        <th style="width: 4,5%" scope="col">12:00</th>
+                        <th style="width: 4,5%" scope="col">12:30</th>
+                        <th style="width: 4,5%" scope="col">13:00</th>
+                        <th style="width: 4,5%" scope="col">13:30</th>
+                        <th style="width: 4,5%" scope="col">14:00</th>
+                        <th style="width: 4,5%" scope="col">14:30</th>
+                        <th style="width: 4,5%" scope="col">15:00</th>
+                        <th style="width: 4,5%" scope="col">15:30</th>
+                        <th style="width: 4,5%" scope="col">16:00</th>
+                        <th style="width: 4,5%" scope="col">16:30</th>
+                        <th style="width: 2%" scope="col"></th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block>
+                        <tr th:each="entryOfDay : ${allEntries.value.getTimeTable()}">
+                            <th th:text="${entryOfDay.key}"></th>
+                            <td th:each="schedule :${entryOfDay.value}"
+                                th:class=" 'scheduled-' +${schedule.isScheduled()? 'true' : 'false'}"
+                                th:text="${schedule.getTextOfCell()}"
+                                th:colspan="${schedule.getColspan()}"
+                            >...
+                            </td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="scheduleModal" tabindex="-1" role="dialog" aria-labelledby="scheduleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="scheduleModalLabel">Schedule repair</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form th:object="${scheduleForm}" th:action="@{'/schedule'}" action="#" method="POST">
+                                <input type="hidden" name="scheduleId" id="scheduleid">
+                                <div class="form-group">
+                                    <label for="repReqList" class="col-form-label">Select request to be
+                                        scheduled</label>
+                                    <select th:field="*{repReqId}" type="text" name="repairRequestList"
+                                            class="form-control" id="repReqList">
+                                            <option value=" "></option>
+                                        <option th:each="requests : ${UnscheduledRequests}"
+                                                th:value="${requests.repReqId}"
+                                                th:text="${requests.licencePlate}+'; '+${requests.defectDescription}">
+                                        </option>
+                                    </select>
+                                    <label for="mechanic" class="col-form-label">Select mechanic</label>
+                                    <select th:field="*{mechanic}" type="text" name="mechanic" class="form-control"
+                                            id="mechanic" maxlength="20" required>
+                                        <option value=" "></option>
+                                        <option th:each="mechs : ${AvailableMechanics}"
+                                                th:value="${mechs.mechanicName}"
+                                                th:text="${mechs.mechanicName}">
+                                        </option>
+                                    </select>
+
+                                    <label for="datetimeselector" class="col-form-label">Select the date of
+                                        reparation</label>
+                                    <input th:field="*{beginningTime}" type="datetime-local" id="datetimeselector"
+                                           name="dateselector" class="form-control">
+                                    <label for="duration" class="col-form-label">Select estimated repair time in
+                                        hours</label>
+                                    <input th:field="*{duration}" type="number" min="1" max="30" value="1"
+                                           id="duration">
+                                    </select>
+                                </div>
+
+                                <button id="scheduleSubmit" type="submit" class="d-none"></button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="$('#scheduleSubmit').click();">Save
+                                changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-repRequest" role="tabpanel" aria-labelledby="nav-repRequest-tab">
+            <div>
+                <form th:object="${repRequestForm}" action="#" th:action="@{'/repRequest'}">
+                    <button id="show" style="margin: 0.25em;" type="button" class="btn btn-info float-right"
+                            onclick="showNoteModal()">
+                        + Add a new repair request
+                    </button>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped" id="userTable">
+                    <thead>
+                    <tr>
+                        <th style="width: 15%" scope="col"></th>
+                        <th style="width: 10%" scope="col">Received request at</th>
+                        <th style="width: 10%" scope="col">Client</th>
+                        <th style="width: 10%" scope="col">Licence plate nr.</th>
+                        <th style="width: 15%" scope="col">VIN</th>
+                        <th style="width: 40%" scope="col">Issue</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="repReqs : ${SavedRepairRequests}">
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-success"
+                                        th:id="'edtbtn of row '+${repReqs.getRepReqId()}"
+                                        th:onclick="javascript: showNoteModal([[${repReqs.getRepReqId()}]],[[${repReqs.getClientName()}]],[[${repReqs.getLicencePlate()}]],[[${repReqs.getVinNumber()}]],[[${repReqs.getDefectDescription()}]])">
+                                    Edit
+                                </button>
+                                <a th:id="'dltbtn of row '+${repReqs.getRepReqId()}"
+                                   th:href="@{/repRequest-delete(clientName=${repReqs.getClientName()})}"
+                                   class="btn btn-danger">Delete</a>
+                            </td>
+                            <th th:id="'timestamp  of row'+${repReqs.getRepReqId()}"
+                                th:text="${repReqs.getTimeStamp()}"></th>
+                            <th th:id="'clientname of row '+${repReqs.getRepReqId()}" scope="row"
+                                th:text="${repReqs.getClientName()}">Example Note Title
+                            </th>
+                            <td th:id="'licenceplate of row'+${repReqs.getRepReqId()}"
+                                th:text="${repReqs.getLicencePlate()}"></td>
+                            <td th:id="'vinnumber of row'+${repReqs.getRepReqId()}"
+                                th:text="${repReqs.getVinNumber}"></td>
+                            <td th:id="'defectdesc of row '+${repReqs.getRepReqId()}"
+                                th:text="${repReqs.getDefectDescription()}">Example Note Description
+                            </td>
+                        <tr>
+                            <td colspan="6">
+                                <ul class="progressbar">
+                                    <li class="active">Request received</li>
+                                    <li th:class=" '' +${repReqs.getPartsOrdered()? 'active' : 'inactive'}">Parts
+                                        ordered
+                                    </li>
+                                    <li th:class=" '' +${repReqs.getScheduled()? 'active' : 'inactive'}">Reparation
+                                        scheduled
+                                    </li>
+                                    <li th:class=" '' +${localDate.isAfter(repReqs.getTimeStamp().toInstant())&&repReqs.getScheduled()? 'active' : 'inactive'}">
+                                        Currently undergoing reparation
+                                    </li>
+                                    <li th:class=" '' +${repReqs.getFinished()? 'active' : 'inactive'}">Reparation
+                                        finished
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="noteModalLabel">Repair request</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:object="${repRequestForm}" th:action="@{/repRequest}" action="#"
+                                  method="POST">
+                                <input type="hidden" name="repReqId" id="repreqid">
+                                <div class="form-group">
+                                    <label for="clientname" class="col-form-label">Name of client</label>
+                                    <input th:field="*{clientName}" type="text" name="clientname"
+                                           class="form-control"
+                                           id="clientname" maxlength="20" required>
+                                </div>
+                                <div class="form-group"><!--newly introduced input-->
+                                    <label for="licenceplate" class="col-form-label">Licence plate</label>
+                                    <input th:field="*{licencePlate}" type="text" name="licencePlate"
+                                           class="form-control" id="licenceplate" maxlength="20" required>
+                                </div>
+                                <div class="form-group"><!--newly introduced input-->
+                                    <label for="vinnumber" class="col-form-label">VIN number</label>
+                                    <input th:field="*{vinNumber}" type="text" name="vinNumber"
+                                           class="form-control"
+                                           id="vinnumber" maxlength="20" required>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="defectdescription" class="col-form-label">Issue
+                                        Description</label>
+                                    <textarea th:field="*{defectDescription}" class="form-control"
+                                              name="defectDescription" id="defectdescription" rows="5"
+                                              maxlength="1000" required></textarea>
+                                </div>
+                                <button id="noteSubmit" type="submit" class="d-none"></button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">
+                                Save
+                                changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script th:src="@{/js/jquery-slim.min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+<!--For opening the repRequest modal-->
+<script type="text/javascript">
+
+            function showNoteModal(repReqId, clientName,licencePlate,vinNumber, defectDescription) {
+                $('#repreqid').val(repReqId ? repReqId: '');
+                $('#clientname').val(clientName ? clientName : '');
+                $('#licenceplate').val(licencePlate ? licencePlate: '');
+                $('#vinnumber').val(vinNumber ? vinNumber: '');
+                $('#defectdescription').val(defectDescription ? defectDescription : '');
+                $('#noteModal').modal('show');
+                }
+
+
+function showScheduleModal(repReqId, clientName,licencePlate,vinNumber, defectDescription) {
+                $('#repreqid').val(repReqId ? repReqId: '');
+                $('#clientname').val(clientName ? clientName : '');
+                $('#licenceplate').val(licencePlate ? licencePlate: '');
+                $('#vinnumber').val(vinNumber ? vinNumber: '');
+                $('#defectdescription').val(defectDescription ? defectDescription : '');
+                $('#scheduleModal').modal('show');
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<style type="text/css">
+.progressbar{
+    counter-reset: step;
+    }
+    .progressbar li {
+    list-style-type: none;
+    float:left;
+    width:20.00%;
+    position:relative;
+    text-align: center;
+  }
+  .progressbar li:before {
+  content:counter(step);
+  counter-increment:step;
+  width: 30px;
+  height: 30px;
+  line-height:30px;
+  border: 1px solid #ddd;
+  display: block;
+  text-align: center;
+  margin: 0 auto 10px auto;
+  border-radius:50px;
+  background-color:white;
+
+  }
+  .progressbar li:after {
+  content: ' ';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  top: 15px;
+  left:-50%;
+  z-index:-1;
+  }
+  .progressbar li:first-child:after{
+  content: none;
+  }
+  .progressbar li.active {
+  color:green;
+  }
+  .progressbar li.active:before {
+  border-color: green;
+  }
+  .progressbar li.active + li:after{
+  background-color: green;
+  }
+
+  .scheduled-true{
+    background-color:red;
+    border: 1px solid #ddd;
+    border-radius:5px;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+</body>
+</html>
