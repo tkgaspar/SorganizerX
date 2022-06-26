@@ -36,7 +36,7 @@ public class RepRequestController {
         } else {
             attributes.addAttribute("SavedRepairRequests", repReqService.getAllRequestsByUserId(repRequestForm.getUserId()));
         }
-        return new ModelAndView("home", attributes);
+        return new ModelAndView("home.html", attributes);
     }
 
 
@@ -59,7 +59,7 @@ public class RepRequestController {
             attributes.addAttribute("SavedRepairRequests", repReqService.getUnscheduledRepReqList());
 
         }
-        return new ModelAndView("forward:/result", attributes);
+        return new ModelAndView("forward:/result.html", attributes);
     }
 
     @GetMapping("/repRequest-delete")
@@ -73,17 +73,17 @@ public class RepRequestController {
             }
         }
         attributes.addAttribute("SavedRepairRequests", repReqService.getAllRequestsByUserId(user.getUserId()));
-        return new ModelAndView("forward:/result", attributes);
+        return new ModelAndView("forward:/result.html", attributes);
     }
 
     @GetMapping("/result")
     public String getResultPage() {
-        return "result";
+        return "result.html";
     }
 
     @PostMapping("/result")
     public String postResultPage() {
-        return "result";
+        return "result.html";
     }
 
 }
