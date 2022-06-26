@@ -97,7 +97,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <form th:object="${scheduleForm}" th:action="@{'/schedule'}" action="#" method="POST">
+                            <form th:object="${scheduleForm}" th:action="@{'/home'}" action="#" method="POST">
                                 <input type="hidden" name="scheduleId" id="scheduleid">
                                 <div class="form-group">
                                     <label for="repReqList" class="col-form-label">Select request to be
@@ -227,7 +227,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form th:object="${repRequestForm}" th:action="@{/repRequest}" action="#"
+                            <form th:object="${repRequestForm}" th:action="@{/home}" action="#"
                                   method="POST">
                                 <input type="hidden" name="repReqId" id="repreqid">
                                 <div class="form-group">
