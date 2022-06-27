@@ -25,7 +25,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @GetMapping("/schedule")
+   /* @GetMapping("/schedule")
     public String scheduleView(@ModelAttribute("scheduleForm") ScheduleForm scheduleForm, Model model) {
         model.addAttribute("UnscheduledRequests", repReqService.getUnscheduledRepReqList());
         model.addAttribute("ScheduledRepairs", scheduleService.getAllSchedules());
@@ -35,7 +35,7 @@ public class ScheduleController {
         return "schedule";
     }
 
-    @PostMapping("/schedule")
+  @PostMapping("/schedule")
     public ModelAndView scheduleRepair(ScheduleForm scheduleForm, ModelMap attributes) {
         if (scheduleForm.getScheduleId() == null) {
             if (Instant.parse(scheduleForm.getBeginningTime()).isBefore(Instant.now())) {
@@ -55,7 +55,7 @@ public class ScheduleController {
             attributes.addAttribute("ScheduledHours", scheduleService.allSchedules());
         }
         return new ModelAndView("forward:/result", attributes);
-    }
+    }*/
 
 
 }

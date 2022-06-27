@@ -97,7 +97,7 @@
                         </div>
                         <div class="modal-body">
 
-                            <form th:object="${scheduleForm}" th:action="@{'/home'}" action="#" method="POST">
+                            <form th:object="${scheduleForm}" th:action="@{'/schedule'}" action="#" method="POST">
                                 <input type="hidden" name="scheduleId" id="scheduleid">
                                 <div class="form-group">
                                     <label for="repReqList" class="col-form-label">Select request to be
@@ -172,7 +172,7 @@
                             <td>
                                 <button type="button" class="btn btn-success"
                                         th:id="'edtbtn of row '+${repReqs.getRepReqId()}"
-                                        th:onclick="javascript: showNoteModal([[${repReqs.getRepReqId()}]],[[${repReqs.getClientName()}]],[[${repReqs.getLicencePlate()}]],[[${repReqs.getVinNumber()}]],[[${repReqs.getDefectDescription()}]])">
+                                        th:onclick="javascript: showRepReqModal([[${repReqs.getRepReqId()}]],[[${repReqs.getClientName()}]],[[${repReqs.getLicencePlate()}]],[[${repReqs.getVinNumber()}]],[[${repReqs.getDefectDescription()}]])">
                                     Edit
                                 </button>
                                 <a th:id="'dltbtn of row '+${repReqs.getRepReqId()}"
@@ -216,18 +216,18 @@
                 </table>
             </div>
 
-            <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel"
+            <div class="modal fade" id="repReqModal" tabindex="-1" role="dialog" aria-labelledby="repReqModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="noteModalLabel">Repair request</h5>
+                            <h5 class="modal-title" id="repReqModalLabel">Repair request</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form th:object="${repRequestForm}" th:action="@{/home}" action="#"
+                            <form th:object="${repRequestForm}" th:action="@{/repRequest}" action="#"
                                   method="POST">
                                 <input type="hidden" name="repReqId" id="repreqid">
                                 <div class="form-group">
@@ -256,12 +256,12 @@
                                               name="defectDescription" id="defectdescription" rows="5"
                                               maxlength="1000" required></textarea>
                                 </div>
-                                <button id="noteSubmit" type="submit" class="d-none"></button>
+                                <button id="repReqSubmit" type="submit" class="d-none"></button>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">
+                            <button type="button" class="btn btn-primary" onclick="$('#repReqSubmit').click();">
                                 Save
                                 changes
                             </button>
@@ -281,7 +281,7 @@
 <!--For opening the repRequest modal-->
 <script type="text/javascript">
 
-            function showNoteModal(repReqId, clientName,licencePlate,vinNumber, defectDescription) {
+            function showRepReqModal(repReqId, clientName,licencePlate,vinNumber, defectDescription) {
                 $('#repreqid').val(repReqId ? repReqId: '');
                 $('#clientname').val(clientName ? clientName : '');
                 $('#licenceplate').val(licencePlate ? licencePlate: '');
