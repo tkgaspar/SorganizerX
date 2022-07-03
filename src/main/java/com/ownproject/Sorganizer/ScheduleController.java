@@ -25,27 +25,29 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-   /* @GetMapping("/schedule")
+ @GetMapping("/schedule")
     public String scheduleView(@ModelAttribute("scheduleForm") ScheduleForm scheduleForm, Model model) {
         model.addAttribute("UnscheduledRequests", repReqService.getUnscheduledRepReqList());
         model.addAttribute("ScheduledRepairs", scheduleService.getAllSchedules());
         model.addAttribute("AvailableMechanics", scheduleService.allMechanics());
         model.addAttribute("localDate", Instant.now());
         model.addAttribute("ScheduledHours", scheduleService.allSchedules());
-        return "schedule";
+        return "/fragments/schedule";
     }
 
-  @PostMapping("/schedule")
+ @PostMapping("/schedule")
     public ModelAndView scheduleRepair(ScheduleForm scheduleForm, ModelMap attributes) {
         if (scheduleForm.getScheduleId() == null) {
             if (Instant.parse(scheduleForm.getBeginningTime()).isBefore(Instant.now())) {
-                attributes.addAttribute("noteUploadErrorBool", true);
-                attributes.addAttribute("noteUploadError", "You cannot schedule a repair in the past! Click ");
+                attributes.addAttribute("schduleErrorBool", true);
+                attributes.addAttribute("scheduleError", "You cannot schedule a repair in the past! Click ");
             } else if (!this.scheduleService.addSchedule(scheduleForm).equals(null)) {
                 attributes.addAttribute("ScheduledRepairs", scheduleService.getAllSchedules());
                 attributes.addAttribute("AvailableMechanics", scheduleService.allMechanics());
                 attributes.addAttribute("UnscheduledRequests", repReqService.getUnscheduledRepReqList());
                 attributes.addAttribute("ScheduledHours", scheduleService.allSchedules());
+                attributes.addAttribute("scheduleSuccessBool", true);
+                attributes.addAttribute("scheduleSuccess", "The repair request has been succesfully scheduled");
             }
         } else {
             this.scheduleService.updateSchedule(scheduleForm);
@@ -53,9 +55,21 @@ public class ScheduleController {
             attributes.addAttribute("AvailableMechanics", scheduleService.allMechanics());
             attributes.addAttribute("UnscheduledRequests", repReqService.getUnscheduledRepReqList());
             attributes.addAttribute("ScheduledHours", scheduleService.allSchedules());
+            attributes.addAttribute("scheduleSuccessBool", true);
+            attributes.addAttribute("scheduleSuccess", "The repair request has been succesfully scheduled");
         }
         return new ModelAndView("forward:/result", attributes);
-    }*/
+    }
+  
+ @GetMapping("/result")
+ public String getResultPage() {
+     return "result";
+ }
+
+ @PostMapping("/result")
+ public String postResultPage() {
+     return "result";
+ }
 
 
 }

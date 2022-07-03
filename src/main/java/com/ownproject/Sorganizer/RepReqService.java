@@ -64,8 +64,16 @@ public class RepReqService {
 		RepRequest repRequest = new RepRequest();
 		Optional<RepRequest> repReq = repRequestRepository.findById(r.getRepReqId());
 		if (repReq.isPresent()) {
-			repRequest = repReq.get();
-
+			repRequest.setClientName(r.getClientName());
+			repRequest.setDefectDescription(r.getDefectDescription());
+			repRequest.setVinNumber(r.getVinNumber());
+			repRequest.setLicencePlate(r.getLicencePlate());
+			repRequest.setFinished(repReq.get().getFinished());
+			repRequest.setScheduled(repReq.get().getScheduled());
+			repRequest.setRepReqId(repReq.get().getRepReqId());
+			repRequest.setPartsOrdered(repReq.get().getPartsOrdered());
+			repRequest.setTimeStamp(repReq.get().getTimeStamp());
+			repRequest.setUser(repReq.get().getUserId());
 		}
 		repRequestRepository.save(repRequest);
 	}

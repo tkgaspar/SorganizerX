@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/repRequest")
 public class RepRequestController {
 
     private RepReqService repReqService;
@@ -27,8 +26,8 @@ public class RepRequestController {
     }
 
 
-    @GetMapping
-    public ModelAndView getNoteList(Authentication auth, RepRequestForm repRequestForm, ModelMap attributes) {
+    @GetMapping("/reprequest")
+    public String getRepReqList(Authentication auth, RepRequestForm repRequestForm, ModelMap attributes) {
         User user = this.userService.getUser(auth.getName());
         if (user.getRoles().contains("ADMIN") || user.getRoles().contains("EDITOR")) {
             attributes.addAttribute("SavedRepairRequests", repReqService.getUnscheduledRepReqList());
@@ -36,54 +35,50 @@ public class RepRequestController {
         } else {
             attributes.addAttribute("SavedRepairRequests", repReqService.getAllRequestsByUserId(repRequestForm.getUserId()));
         }
-        return new ModelAndView("home", attributes);
+        return "/fragments/reprequest";
     }
 
 
-    @PostMapping
+    @PostMapping("/reprequest")
     public ModelAndView addRepRequest(RepRequestForm repRequestForm, Authentication auth, ModelMap attributes) {
         User user = this.userService.getUser(auth.getName());
         if (repRequestForm.getRepReqId() == null) {
             if (!this.repReqService.addRepReq(repRequestForm, user).equals(null)) {
-                attributes.addAttribute("noteUploadSuccessBool", true);
-                attributes.addAttribute("noteUploadSuccess", "Your note has been saved successfully ! ");
+                attributes.addAttribute("repReqSuccessBool", true);
+                attributes.addAttribute("repReqSuccess", "Your repair request has been saved successfully ! ");
                 attributes.addAttribute("SavedRepairRequests", repReqService.getUnscheduledRepReqList());
             } else {
-                attributes.addAttribute("noteUploadErrorBool", true);
-                attributes.addAttribute("noteUploadError", "Something went wrong, please try again!");
+                attributes.addAttribute("repReqErrorBool", true);
+                attributes.addAttribute("repReqError", "Something went wrong, please try again!");
             }
         } else {
             this.repReqService.save(repRequestForm);
-            attributes.addAttribute("noteUploadSuccessBool", true);
-            attributes.addAttribute("noteUploadSuccess", "Your note has been saved successfully ! ");
+            attributes.addAttribute("repReqSuccessBool", true);
+            attributes.addAttribute("repReqSuccess", "Your repair request has been saved successfully ! ");
             attributes.addAttribute("SavedRepairRequests", repReqService.getUnscheduledRepReqList());
 
         }
         return new ModelAndView("forward:/result", attributes);
     }
 
-    @GetMapping("/repRequest-delete")
+    @GetMapping("/reprequest-delete")
     public ModelAndView deleteNote(@ModelAttribute("repRequestForm") RepRequestForm repRequestForm, Authentication auth, ModelMap attributes) {
         User user = this.userService.getUser(auth.getName());
         for (RepRequest repRequest : this.repReqService.getAllRequestsByUserId(user.getUserId())) {
             if (repRequest.getRepReqId().equals(repRequestForm.getRepReqId())) {
                 this.repReqService.delete(repRequest);
-                attributes.addAttribute("noteUploadSuccessBool", true);
-                attributes.addAttribute("noteUploadSuccess", "Your note has been deleted! ");
-            }
+                attributes.addAttribute("repReqSuccessBool", true);
+                attributes.addAttribute("repReqSuccess", "Your repair request has been deleted! ");
+                attributes.addAttribute("repReqErrorBool",false);
+            }else{
+            	attributes.addAttribute("repReqErrorBool",true);
+            	attributes.addAttribute("repReqError","Something went wrong, request not deleted, pls. try again!");            }
+            
         }
         attributes.addAttribute("SavedRepairRequests", repReqService.getAllRequestsByUserId(user.getUserId()));
         return new ModelAndView("forward:/result", attributes);
     }
 
-    @GetMapping("/result")
-    public String getResultPage() {
-        return "result";
-    }
-
-    @PostMapping("/result")
-    public String postResultPage() {
-        return "result";
-    }
+   
 
 }

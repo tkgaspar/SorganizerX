@@ -10,7 +10,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Controller
+/*@Controller
 public class MyErrorController implements ErrorController {
 
     public String getErrorPath() {
@@ -23,4 +23,6 @@ public class MyErrorController implements ErrorController {
         model.addAttribute("PageNotFoundError", true);
         return "/error";
     }
-}
+    
+}*/
+

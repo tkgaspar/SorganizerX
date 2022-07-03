@@ -2,12 +2,17 @@ package com.ownproject.Sorganizer;
 
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.servlet.support.ErrorPageFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+
 
 
 @Configuration
@@ -29,6 +34,6 @@ public class MYConfiguration implements WebMvcConfigurer{
 	       
 
 	   }
-		
+	    
 	
 }
